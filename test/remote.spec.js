@@ -1,13 +1,13 @@
 'use strict';
 
+const assert = require('node:assert/strict')
+const { describe, it, afterEach } = require('node:test');
 const Cache = require('../lib/cache');
 const config = require('../lib/config');
-const sinon = require('sinon');
 const path = require('path');
 const fs = require('fs-extra');
 const index = require('../lib/index');
 const utils = require('../lib/utils');
-var assert = require('assert');
 
 describe('Remote', () => {
   describe('update()', () => {
@@ -43,21 +43,24 @@ describe('Remote', () => {
 
     testCases.forEach((testCase) => {
       describe(`${testCase.description}`, () => {
+        /** @param {import('node:test').TestContext} t */
+        function mockFns(t) {
+          t.mock.method(fs, 'ensureDir');
+          t.mock.method(fs, 'remove', () => Promise.resolve());
+          t.mock.method(fs, 'copy', () => Promise.resolve());
+          t.mock.method(utils, 'localeToLang', () => testCase.LANG);
+          t.mock.method(index, 'rebuildPagesIndex', () => Promise.resolve());
+        }
+
         let tempFolder;
 
-        beforeEach(() => {
-          sinon.spy(fs, 'ensureDir');
-          sinon.stub(fs, 'remove').resolves();
-          sinon.stub(fs, 'copy').resolves();
-          sinon.stub(utils, 'localeToLang').returns(testCase.LANG);
-          sinon.stub(index, 'rebuildPagesIndex').resolves();
-        });
+        it('passes', (t) => {
+          mockFns(t);
 
-        it('passes', () => {
           const cache = new Cache(config.get());
           return cache.update().then(() => {
-            let call = fs.ensureDir.getCall(0);
-            tempFolder = call.args[0];
+            let call = fs.ensureDir.mock.calls[0];
+            tempFolder = call.arguments[0];
 
             // Get the actual cache folders created
             const items = fs.readdirSync(tempFolder);
@@ -74,20 +77,13 @@ describe('Remote', () => {
           }).catch((err) => {
             throw err;
           });
-        }).timeout(TIMEOUT_INTERVAL);
+        });
 
         afterEach(async () => {
-          // Clearing Spies & Stubs
-          fs.copy.restore();
-          fs.remove.restore();
-          fs.ensureDir.restore();
-          utils.localeToLang.restore();
-          index.rebuildPagesIndex.restore();
-
           await fs.remove(tempFolder);
-        }).timeout(TIMEOUT_INTERVAL);
+        });
 
-      }).timeout(TIMEOUT_INTERVAL);
+      });
     });
   });
 });

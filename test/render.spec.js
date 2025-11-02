@@ -1,8 +1,8 @@
 'use strict';
 
+const assert = require('node:assert/strict')
+const { describe, it, beforeEach } = require('node:test');
 const render = require('../lib/render');
-const sinon = require('sinon');
-const should = require('should');
 
 describe('Render', () => {
 
@@ -21,18 +21,14 @@ describe('Render', () => {
     };
   });
 
-  afterEach(() => {
-    sinon.restore();
-  });
-
   it('surrounds the output with blank lines', () => {
     let text = render.toANSI({
       name: 'tar',
       description: 'archive utility',
       examples: []
     }, this.config);
-    text.should.startWith('\n');
-    text.should.endWith('\n');
+    assert.equal(text?.startsWith('\n'), true);
+    assert.equal(text?.endsWith('\n'), true);
   });
 
   it('contains the command name', () => {
@@ -41,8 +37,8 @@ describe('Render', () => {
       description: 'archive utility',
       examples: []
     }, this.config);
-    text.should.containEql('tar');
-    text.should.containEql('archive utility');
+    assert.equal(text?.includes('tar'), true);
+    assert.equal(text?.includes('archive utility'), true);
   });
 
   it('contains the description name', () => {
@@ -51,8 +47,8 @@ describe('Render', () => {
       description: 'archive utility\nwith support for compression',
       examples: []
     }, this.config);
-    text.should.containEql('archive utility');
-    text.should.containEql('with support for compression');
+    assert.equal(text?.includes('archive utility'), true);
+    assert.equal(text?.includes('with support for compression'), true);
   });
 
   it('highlights replaceable {{tokens}}', () => {
@@ -64,9 +60,9 @@ describe('Render', () => {
         code: 'hello {{token}} bye'
       }]
     }, this.config);
-    text.should.containEql('hello ');
-    text.should.containEql('token');
-    text.should.containEql(' bye');
+    assert.equal(text?.includes('hello'), true);
+    assert.equal(text?.includes('token'), true);
+    assert.equal(text?.includes('bye'), true);
   });
 
   it('should correctly render see also section', () => {
@@ -83,10 +79,12 @@ describe('Render', () => {
         'sudo'
       ]
     }, this.config);
-    text.should.containEql('See also: lsb_release, sudo');
+    assert.equal(text?.includes('See also: lsb_release, sudo'), true);
   });
 
-  it('should return an error for invalid theme', () => {
+  it('should return an error for invalid theme', (t) => {
+    t.mock.method(console, 'error');
+
     const config = {
       'themes': {
         'base16': {
@@ -104,7 +102,7 @@ describe('Render', () => {
       name: 'tar',
       description: 'archive utility',
     }, config);
-    should.not.exist(text);
-    console.error.getCall(0).args[0].should.equal('invalid theme: bad');
+    assert.equal(!!text, false);
+    assert.equal(console.error.mock.calls[0].arguments[0], 'invalid theme: bad');
   });
 });

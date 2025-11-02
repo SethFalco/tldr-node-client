@@ -1,5 +1,7 @@
 'use strict';
 
+const assert = require('node:assert/strict')
+const { describe, it } = require('node:test');
 const Theme = require('../lib/theme');
 const chalk = require('chalk');
 
@@ -16,33 +18,23 @@ describe('Theme', () => {
     });
 
     it('should render name with green and bold', () => {
-      theme.renderCommandName('text')
-        .should.equal(
-          chalk.green.bold('text'));
+      assert.equal(theme.renderCommandName('text'), chalk.green.bold('text'));
     });
 
     it('should render description with red and underline', () => {
-      theme.renderMainDescription('text')
-        .should.equal(
-          chalk.red.underline('text'));
+      assert.equal(theme.renderMainDescription('text'), chalk.red.underline('text'));
     });
 
     it('should render example description with blue', () => {
-      theme.renderExampleDescription('text')
-        .should.equal(
-          chalk.blue('text'));
+      assert.equal(theme.renderExampleDescription('text'), chalk.blue('text'));
     });
 
     it('should render example code with blue', () => {
-      theme.renderExampleCode('text')
-        .should.equal(
-          chalk.bold('text'));
+      assert.equal(theme.renderExampleCode('text'), chalk.bold('text'));
     });
 
     it('should render example argument with yellow, dim, underline', () => {
-      theme.renderExampleToken('text')
-        .should.equal(
-          chalk.yellow.dim.underline('text'));
+      assert.equal(theme.renderExampleToken('text'), chalk.yellow.dim.underline('text'));
     });
   });
 
@@ -57,33 +49,23 @@ describe('Theme', () => {
     });
 
     it('should render name with greenBright and bold', () => {
-      theme.renderCommandName('text')
-        .should.equal(
-          chalk.greenBright.bold('text'));
+      assert.equal(theme.renderCommandName('text'), chalk.greenBright.bold('text'));
     });
 
     it('should render description with greenBright and bold', () => {
-      theme.renderMainDescription('text')
-        .should.equal(
-          chalk.greenBright.bold('text'));
+      assert.equal(theme.renderMainDescription('text'), chalk.greenBright.bold('text'));
     });
 
     it('should render example description with greenBright', () => {
-      theme.renderExampleDescription('text')
-        .should.equal(
-          chalk.greenBright('text'));
+      assert.equal(theme.renderExampleDescription('text'), chalk.greenBright('text'));
     });
 
     it('should render example code with redBright', () => {
-      theme.renderExampleCode('text')
-        .should.equal(
-          chalk.redBright('text'));
+      assert.equal(theme.renderExampleCode('text'), chalk.redBright('text'));
     });
 
     it('should render example argument with white', () => {
-      theme.renderExampleToken('text')
-        .should.equal(
-          chalk.white('text'));
+      assert.equal(theme.renderExampleToken('text'), chalk.white('text'));
     });
   });
 
@@ -100,39 +82,25 @@ describe('Theme', () => {
     });
 
     it('should render name with greenBright and bold', () => {
-      theme.renderCommandName('text')
-        .should.equal(
-          chalk.greenBright.bold('text'));
+      assert.equal(theme.renderCommandName('text'), chalk.greenBright.bold('text'));
     });
 
     it('should render description with greenBright and bold', () => {
-      theme.renderMainDescription('text')
-        .should.equal(
-          chalk.greenBright.bold('text'));
+      assert.equal(theme.renderMainDescription('text'), chalk.greenBright.bold('text'));
     });
 
     it('should render example description with greenBright', () => {
-      theme.renderExampleDescription('text')
-        .should.equal(
-          chalk.greenBright('text'));
+      assert.equal(theme.renderExampleDescription('text'), chalk.greenBright('text'));
     });
 
     it('should render example code with redBright', () => {
-      theme.renderExampleCode('text')
-        .should.equal(
-          chalk.redBright('text'));
+      assert.equal(theme.renderExampleCode('text'), chalk.redBright('text'));
     });
 
     it('should render example arguments with magenta, white, and blue, for boolean, number, and string respectively', () => {
-      theme.renderExampleToken('true')
-        .should.equal(
-          chalk.magenta('true'));
-      theme.renderExampleToken('9')
-        .should.equal(
-          chalk.white('9'));
-      theme.renderExampleToken('text')
-        .should.equal(
-          chalk.blue('text'));
+      assert.equal(theme.renderExampleToken('true'), chalk.magenta('true'));
+      assert.equal(theme.renderExampleToken('9'), chalk.white('9'));
+      assert.equal(theme.renderExampleToken('text'), chalk.blue('text'));
     });
   });
 });
